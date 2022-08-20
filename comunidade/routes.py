@@ -5,9 +5,10 @@ from comunidade.forms import FormLogin, FormCriarConta
 #criar usuario
 from comunidade.models import Usuario
 #login
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 
-
+#aula 29 bloquear usuario q nao esteja logado, import login_required q é uma função usada como decorated, em todas as páginas q eu quero bloquear eu o uso
+#caso ele nao esteja logado ele sera redirecionado p a pagina login, vai p init
 
 #para ter usuarios temos q ter uma lista
 lista_usuarios = ['Fabiano', 'Joelson', 'Marisa', 'Rafa', 'Raul']
@@ -35,6 +36,7 @@ def contato():
 # render_template('contato.html')
 
 @app.route('/usuarios')
+@login_required
 def usuarios():
     return render_template('usuarios.html', lista_usuarios=lista_usuarios)
 
@@ -74,6 +76,7 @@ def login_criar_conta():
 #criar 3 link: 3 paginas: criar post, sair, meu perfil; se o cara ta logado aparece no menu
 #importar o cara q identificar qm é o usuario q esta usando a ferramenta: current_user e vai p o navbar.html
 @app.route('/sair')
+@login_required
 def sair():
     logout_user()
     flash(f'Logout feito com sucesso.', 'alert-success')
@@ -81,10 +84,12 @@ def sair():
 #import logout_user
 
 @app.route('/perfil')
+@login_required
 def perfil():
     return render_template('perfil.html')
 
 #/post/criar pensando mais a frente pq eu posso apenas ver o post ou criar
 @app.route('/post/criar')
+@login_required
 def criar_post():
     return render_template('criarpost.html')

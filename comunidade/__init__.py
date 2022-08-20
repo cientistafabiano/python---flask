@@ -36,6 +36,10 @@ database = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
 login_manager = LoginManager(app)
+#aula 29
+login_manager.login_view = 'login_criar_conta'
+#criar cx de msg
+login_manager.login_message_category = 'alert-info'
 
 #chama no fim para poder chamar os links depois q chama o app
 from comunidade import routes
