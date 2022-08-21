@@ -56,6 +56,12 @@ def login_criar_conta():
             login_user(usuario, remember=form_login.lembrar_dados.data)
             #fez o login com sucesso tela verde
             flash(f'Login feito com sucesso no e-mail: {form_login.email.data}', 'alert-success')
+            #aula 30 queremos redirecionar o usuario p a pagina q ele desejava antes de fazer login
+            par_next = request.args.get('next')
+            if par_next:
+                return redirect(par_next)
+            else:
+                return render_template(url_for('home'))
             # redirecionar para a pagina home
             return redirect(url_for('home'))
         else:
@@ -86,7 +92,9 @@ def sair():
 @app.route('/perfil')
 @login_required
 def perfil():
-    return render_template('perfil.html')
+    #foto_perfil recebe a foto do usario q sera carregada
+    foto_perfil = url_for('static', filename='fotos_perfil/{}'.format(current_user.foto_perfil))
+    return render_template('perfil.html', foto_perfil=foto_perfil)
 
 #/post/criar pensando mais a frente pq eu posso apenas ver o post ou criar
 @app.route('/post/criar')

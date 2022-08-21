@@ -19,7 +19,7 @@ class Usuario(database.Model, UserMixin):
     username = database.Column(database.String, nullable=False)
     email = database.Column(database.String, nullable=False, unique=True)
     senha = database.Column(database.String, nullable=False)
-    foto_perfil = database.Column(database.String, default='default.png')
+    foto_perfil = database.Column(database.String, default='default.jpg')
     posts = database.relationship('Post', backref='autor', lazy=True)
 # cada usuario pode ter muitos posts, relação um p muitos: posts = database.relationship()
 #como fazer para relacionar: com o backref=autor
