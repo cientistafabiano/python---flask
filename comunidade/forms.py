@@ -43,6 +43,14 @@ class FormEditarPerfil(FlaskForm):
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     #aula 37 add campo imagem, depois fazer edição no html
     foto_perfil = FileField('Atualizar Foto de Perfil', validators=[FileAllowed(['jpg', 'png', 'svg'])])
+    #aula 39 add os cursos ao perfil -> add no html editarperfil
+    curso_excel = BooleanField('Excel Impressinador')
+    curso_vba = BooleanField('VBA Impressionador')
+    curso_powerbi = BooleanField('Power BI Impressionador')
+    curso_python = BooleanField('Python Impressionador')
+    curso_ppt = BooleanField('Apresentações Impressionador')
+    curso_sql = BooleanField('SQL Impressionador')
+
     botao_submit_editarperfil = SubmitField('Confirmar Edição')
 
     #aula 36 verificar se esse novo email ja existe

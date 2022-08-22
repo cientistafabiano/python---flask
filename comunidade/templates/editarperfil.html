@@ -49,6 +49,17 @@
                         {% endfor %}
                     {% endif %}
                 </article>
+                <!--aula 39 add os campos dos cursos-->
+                <hr>
+                <p>Cursos</p>
+                {% for campo in form %}
+                    {% if 'curso_' in campo.name %}
+                        <article class="form-group">
+                           {{ campo(class="form-check-input") }}
+                           {{ campo.label(class="form-check-label") }}
+                        </article>
+                    {% endif %}
+                {% endfor %}
             </fieldset>
             {{ form.botao_submit_editarperfil(class="btn btn-primary mt-2") }}
         </form>

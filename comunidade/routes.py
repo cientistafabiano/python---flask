@@ -6,6 +6,10 @@ from comunidade.forms import FormLogin, FormCriarConta, FormEditarPerfil
 from comunidade.models import Usuario
 #login
 from flask_login import login_user, logout_user, current_user, login_required
+#aula 38 -> o os servira para separar o nome da imagem
+import secrets
+import os
+from PIL import Image
 
 #aula 29 bloquear usuario q nao esteja logado, import login_required q é uma função usada como decorated, em todas as páginas q eu quero bloquear eu o uso
 #caso ele nao esteja logado ele sera redirecionado p a pagina login, vai p init
@@ -103,6 +107,19 @@ def criar_post():
     return render_template('criarpost.html')
 
 
+#aula 38
+def salvar_imagem(imagem):
+    codigo = secrets.token_hex(8)
+    nome, extensao = os.path.splitext(imagem.filename)
+    nome_arquivo = nome + codigo + extensao
+    caminho_completo = os.path.join(app.root_path, 'static/fotos_perfil', nome_arquivo)
+    tamanho = (200, 200)
+    #instalar um cara p reduzir a imagem: pillow
+    imagem_reduzida = Image.open(imagem)
+    imagem_reduzida.thumbnail(tamanho)
+    imagem_reduzida.save(caminho_completo)
+    return nome_arquivo
+
 #editar perfil aula 35
 #aula 36 validar o button submit
 @app.route('/perfil/editar', methods=['GET', 'POST'])
@@ -114,6 +131,11 @@ def editar_perfil():
         current_user.email = form.email.data
         #preenche novo nome
         current_user.username = form.username.data
+        #aula 38 edição e compactação da imagem de perfil
+        if form.foto_perfil.data:
+        #add um codigo aleatorio no nome da imagem -> reduzir o tamanho da imagem -> salvar a imagem na pasta -> mudar o campo foto-perfil do usuario p o novo nome da imagem
+            nome_imagem = salvar_imagem(form.foto_perfil.data)
+            current_user.foto_perfil = nome_imagem
         #atualiza no banco de dados
         database.session.commit()
         flash('Perfil atualizado com sucesso.', 'alert-success')
