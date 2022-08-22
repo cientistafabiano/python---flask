@@ -1,0 +1,58 @@
+<!-- aula 35 pegando a pagina perfil inteira e so vamos acrescentar o formulario de edição, criar no forms e depois jopgar no routes-->
+{% extends 'perfil.html' %}
+
+{% block form_editar_perfil %}
+<main class="container mt-5">
+    <section class="w-50">
+        <!-- sempre q tiver um formulario q permite subir um arquivo dentro do form html dele alem do post tem q ter o parametro enctype -->
+        <form method="POST" actions="" class="col me-1 p-4 border" enctype="multipart/form-data">
+            <!--criou o form o ideal é colocar o token-->
+            {{ form.csrf_token }}
+            <legend>Editar Perfil</legend>
+            <fieldset>
+                 <article class="form-group">
+                    {{ form.username.label(class="form-control-label") }}
+                    <!--se eu tiver um erro essa condição mostra -->
+                    {% if form.username.errors %}
+                        {{ form.username(class="form-control is-invalid") }}
+                    <article class="invalid-feedback">
+                        {% for erro in form.username.errors %}
+                            {{ erro }}
+                        {% endfor %}
+                    </article>
+                    {% else %}
+                        {{ form.username(class="form-control") }}
+                    {% endif %}
+                </article>
+                <article class="form-group">
+                    {{ form.email.label(class="form-control-label") }}
+                    <!--se eu tiver um erro essa condição mostra -->
+                    {% if form.email.errors %}
+                        {{ form.email(class="form-control is-invalid") }}
+                    <article class="invalid-feedback">
+                        {% for erro in form.email.errors %}
+                            {{ erro }}
+                        {% endfor %}
+                    </article>
+                    {% else %}
+                        {{ form.email(class="form-control") }}
+                    {% endif %}
+                </article>
+                <!-- aula  37 -->
+                <article class="form-group">
+                    {{ form.foto_perfil.label }}
+                    {{ form.foto_perfil(class="form-control-file") }}
+                    <!--caso o usuario tente carregar uma imagem com extensao diferente das válidas-->
+                    {% if form.foto_perfil.errors %}
+                        {% for erro in form.foto_perfil.errors %}
+                            <span class="text-danger">{{ erro }}</span><br>
+                        {% endfor %}
+                    {% endif %}
+                </article>
+            </fieldset>
+            {{ form.botao_submit_editarperfil(class="btn btn-primary mt-2") }}
+        </form>
+    </section>
+</main>
+{% endblock %}
+

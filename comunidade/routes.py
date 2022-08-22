@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, flash
 from comunidade import app, database, bcrypt
 #presisamos importa o form e instanciar dentro da função login
-from comunidade.forms import FormLogin, FormCriarConta
+from comunidade.forms import FormLogin, FormCriarConta, FormEditarPerfil
 #criar usuario
 from comunidade.models import Usuario
 #login
@@ -14,7 +14,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 lista_usuarios = ['Fabiano', 'Joelson', 'Marisa', 'Rafa', 'Raul']
 
 
-# toda vez q for criar uma pagina deve começar assim, o ("\") é o caminho do site
+# toda vez q for criar uma pagina deve começar assim: o ("\") é o caminho do site
 #app.route é uma classe do flask
 #decoration é uma função q vem antes de outra função, atribui uma nova funcionalidade a funcao def, faz com q ele apareça dentro do link
 @app.route('/ola')
@@ -101,3 +101,26 @@ def perfil():
 @login_required
 def criar_post():
     return render_template('criarpost.html')
+
+
+#editar perfil aula 35
+#aula 36 validar o button submit
+@app.route('/perfil/editar', methods=['GET', 'POST'])
+@login_required
+def editar_perfil():
+    form = FormEditarPerfil()
+    if form.validate_on_submit():
+        #preenche novo email
+        current_user.email = form.email.data
+        #preenche novo nome
+        current_user.username = form.username.data
+        #atualiza no banco de dados
+        database.session.commit()
+        flash('Perfil atualizado com sucesso.', 'alert-success')
+        return redirect(url_for('perfil'))
+    # aula 36 se o formulario for get? qdo o usuario for editar o formulario ja esta preenchido
+    elif request.method == 'GET':
+        form.email.data = current_user.email
+        form.username.data = current_user.username
+    foto_perfil = url_for('static', filename='fotos_perfil/{}'.format(current_user.foto_perfil))
+    return render_template('editarperfil.html', foto_perfil=foto_perfil, form=form)

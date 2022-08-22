@@ -1,8 +1,13 @@
 from flask_wtf import FlaskForm
+#aula 36: FileField é campo de arquivo, FileAllowed é um validators
+from flask_wtf.file import FileField, FileAllowed
+
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from comunidade.models import Usuario
 #import validation erro
+#aula 36
+from flask_login import current_user
 
 #todo formulario é um objeto em python, cada formulario é uma classe
 #criar validações
@@ -31,3 +36,18 @@ class FormLogin(FlaskForm):
 
 
 #extensao de login no flask: pip install flask-login; vai p o init; vai p o models; vai p routes;
+
+#aula 35 editar perfil
+class FormEditarPerfil(FlaskForm):
+    username = StringField('Nome de Usuário', validators=[DataRequired()])
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
+    #aula 37 add campo imagem, depois fazer edição no html
+    foto_perfil = FileField('Atualizar Foto de Perfil', validators=[FileAllowed(['jpg', 'png', 'svg'])])
+    botao_submit_editarperfil = SubmitField('Confirmar Edição')
+
+    #aula 36 verificar se esse novo email ja existe
+    def validate_email(self, email):
+        if current_user.email != email.data:
+            usuario = Usuario.query.filter_by(email=email.data).first()
+            if usuario:
+                raise ValidationError('Já existe um usuário com esse e-mail. Cadastre outro e-mail')
