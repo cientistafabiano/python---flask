@@ -23,7 +23,7 @@ class Usuario(database.Model, UserMixin):
     posts = database.relationship('Post', backref='autor', lazy=True)
 # cada usuario pode ter muitos posts, relação um p muitos: posts = database.relationship()
 #como fazer para relacionar: com o backref=autor
-    cursos = database.Column(database.String, nullable=False, default='Não informado')
+    cursos = database.Column(database.String, nullable=False, default='Não Informado')
 
 class Post(database.Model):
     id = database.Column(database.Integer, primary_key=True)

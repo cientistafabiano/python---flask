@@ -65,7 +65,7 @@ def login_criar_conta():
             if par_next:
                 return redirect(par_next)
             else:
-                return render_template(url_for('home'))
+                return redirect(url_for('home'))
             # redirecionar para a pagina home
             return redirect(url_for('home'))
         else:
@@ -120,6 +120,16 @@ def salvar_imagem(imagem):
     imagem_reduzida.save(caminho_completo)
     return nome_arquivo
 
+#o q essa função tem q fazer p funcionar? percorrer os campos dos cursos e verificar qm esta marcado
+def atualizar_cursos(form):
+    lista_cursos = []
+    for campo in form:
+        if 'curso_' in campo.name:
+            if campo.data:
+                lista_cursos.append(campo.label.text)
+    return ';'.join(lista_cursos)
+
+
 #editar perfil aula 35
 #aula 36 validar o button submit
 @app.route('/perfil/editar', methods=['GET', 'POST'])
@@ -136,6 +146,8 @@ def editar_perfil():
         #add um codigo aleatorio no nome da imagem -> reduzir o tamanho da imagem -> salvar a imagem na pasta -> mudar o campo foto-perfil do usuario p o novo nome da imagem
             nome_imagem = salvar_imagem(form.foto_perfil.data)
             current_user.foto_perfil = nome_imagem
+        #aula 40 add os cursos -> criar uma função atualizar_cursos
+        current_user.cursos = atualizar_cursos(form)
         #atualiza no banco de dados
         database.session.commit()
         flash('Perfil atualizado com sucesso.', 'alert-success')
