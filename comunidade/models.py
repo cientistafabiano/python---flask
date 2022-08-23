@@ -24,6 +24,10 @@ class Usuario(database.Model, UserMixin):
 # cada usuario pode ter muitos posts, relação um p muitos: posts = database.relationship()
 #como fazer para relacionar: com o backref=autor
     cursos = database.Column(database.String, nullable=False, default='Não Informado')
+#aula 50 criar a logica de contar posts
+    def contar_posts(self):
+        return len(self.posts)
+
 
 class Post(database.Model):
     id = database.Column(database.Integer, primary_key=True)
