@@ -25,7 +25,10 @@
                 </article>
             </article>
             <article class="col-9 text-center">
-                <h2>{{ post.titulo }}</h2>
+                <!-- aula 46 foi colocado essa tag a para virar link p a pagina post.html -->
+                <a class="post-exibir" href="{{ url_for('exibir_post', post_id=post.id) }}">
+                    <h2>{{ post.titulo }}</h2>
+                </a>
                 <p>{{ post.corpo }}</p>
             </article>
         </section>

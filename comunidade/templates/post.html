@@ -1,0 +1,103 @@
+
+{% extends 'base.html' %}
+
+{% block body %}
+    <main class="container mt-3">
+        <section class="row mt-4 mb-3 p-3 meupost">
+            <article class="col-3">
+                <article class="text-center pb-3">
+                    <strong>{{ post.autor.username }}</strong>
+                </article>
+                <figure class="image text-center">
+                    <img src="{{ url_for('static', filename='fotos_perfil/{}'.format(post.autor.foto_perfil)) }}" class="rounded" width="200">
+                </figure>
+                <article class="row">
+                    <strong class="border-bottom text-center">Cursos</strong>
+                    <!-- para cada curso dentro da lista de curso  -->
+                    {% for curso in post.autor.cursos.split(';') %}
+                        <button type="button" class="btn btn-success mt-3" disable>{{ curso }}</button>
+                    {% endfor %}
+                </article>
+            </article>
+            <article class="col-9 text-center">
+                <h2>
+                    {{ post.titulo }}
+                    <!-- aula 48 exibir a data de criacao do post e o botao de editar -->
+                    <small class="data-criacao text-muted">
+                        Data criação: {{ post.data_criacao.strftime('%d/%m/%Y') }}
+                        {% if form %}
+                        <!--aula 48 e 49 criando um link ancora para levar para a edicao do post -->
+                            - <a href="#form_editarpost">Editar Post</a> / <a href="#" class="text-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Excluir Post</a>
+                        {% endif %}
+                    </small>
+                </h2>
+                <p>{{ post.corpo }}</p>
+            </article>
+        </section>
+    </main>
+<!-- aula 47 -->
+{% if form %}
+    <main class="container mt-5">
+        <section class="w-50">
+            <form method="POST" actions="" id="form_editarpost" class="col me-1 p-4 border">
+                <!--criou o form o ideal é colocar o token-->
+                {{ form.csrf_token }}
+                <legend>Editar Post</legend>
+                <fieldset>
+                     <article class="form-group">
+                        {{ form.titulo.label(class="form-control-label") }}
+                        <!--se eu tiver um erro essa condição mostra -->
+                        {% if form.titulo.errors %}
+                            {{ form.titulo(class="form-control is-invalid") }}
+                        <article class="invalid-feedback">
+                            {% for erro in form.titulo.errors %}
+                                {{ erro }}
+                            {% endfor %}
+                        </article>
+                        {% else %}
+                            {{ form.titulo(class="form-control") }}
+                        {% endif %}
+                    </article>
+                    <article class="form-group">
+                        {{ form.corpo.label(class="form-control-label") }}
+                        <!--se eu tiver um erro essa condição mostra -->
+                        {% if form.corpo.errors %}
+                            {{ form.corpo(class="form-control is-invalid") }}
+                        <article class="invalid-feedback">
+                            {% for erro in form.corpo.errors %}
+                                {{ erro }}
+                            {% endfor %}
+                        </article>
+                        {% else %}
+                            {{ form.corpo(class="form-control") }}
+                        {% endif %}
+                    </article>
+                </fieldset>
+                {{ form.botao_submit(class="btn btn-primary mt-2") }}
+            </form>
+        </section>
+    </main>
+{% endif %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Excluir Post</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Você deseja mesmo EXCLUIR esse post? (Essa ação não pode ser desfeita)
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <!-- aula 49 para esse button ter uso vamos criar uma função no routes; criar o form pq temos q enviar uma informação p o banco de dados atraves do action-->
+          <form method="POST" action="{{ url_for('excluir_post', post_id=post.id) }}">
+              <!-- temos qmudar o type de button p submit para ele funcionar -->
+              <button type="submit" class="btn btn-danger">Excluir Post</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
