@@ -1,9 +1,9 @@
 from flask import render_template, redirect, url_for, request, flash
 from comunidade import app, database, bcrypt
 #presisamos importa o form e instanciar dentro da função login
-from comunidade.forms import FormLogin, FormCriarConta, FormEditarPerfil
+from comunidade.forms import FormLogin, FormCriarConta, FormEditarPerfil, FormCriarPost
 #criar usuario
-from comunidade.models import Usuario
+from comunidade.models import Usuario, Post
 #login
 from flask_login import login_user, logout_user, current_user, login_required
 #aula 38 -> o os servira para separar o nome da imagem
@@ -14,23 +14,17 @@ from PIL import Image
 #aula 29 bloquear usuario q nao esteja logado, import login_required q é uma função usada como decorated, em todas as páginas q eu quero bloquear eu o uso
 #caso ele nao esteja logado ele sera redirecionado p a pagina login, vai p init
 
-#para ter usuarios temos q ter uma lista
-lista_usuarios = ['Fabiano', 'Joelson', 'Marisa', 'Rafa', 'Raul']
 
 
 # toda vez q for criar uma pagina deve começar assim: o ("\") é o caminho do site
 #app.route é uma classe do flask
 #decoration é uma função q vem antes de outra função, atribui uma nova funcionalidade a funcao def, faz com q ele apareça dentro do link
-@app.route('/ola')
-def hello_world():
-    return "<p>sexta-feira 12 de agosto 2022 16:20</p><p>quarta-feira 17 de agosto 2022 19:02</p>"
-
-
 @app.route('/')
 def home():
-    return render_template("home.html")
-#   "<p>fazendo errado</p>"
-#retorne o arquivo html home, import antes o render_templates
+    #aula 44
+    posts = Post.query.order_by(Post.id.desc())
+    return render_template("home.html", posts=posts)
+#retorne o arquivo html home, import antes o render_template
 
 
 @app.route('/contato')
@@ -42,6 +36,8 @@ def contato():
 @app.route('/usuarios')
 @login_required
 def usuarios():
+    # aula 42 como  pegar  a   lista    de    usuario    do    banco    de    dados? Usuario.query.all
+    lista_usuarios = Usuario.query.all()
     return render_template('usuarios.html', lista_usuarios=lista_usuarios)
 
 #como importa p dentro do site? igual foi feito em lista_usuarios
@@ -101,10 +97,20 @@ def perfil():
     return render_template('perfil.html', foto_perfil=foto_perfil)
 
 #/post/criar pensando mais a frente pq eu posso apenas ver o post ou criar
-@app.route('/post/criar')
+@app.route('/post/criar', methods=['GET', 'POST'])
 @login_required
 def criar_post():
-    return render_template('criarpost.html')
+    #import FormCriarPost e Post aula 43
+    form = FormCriarPost()
+    if form.validate_on_submit():
+        post = Post(titulo=form.titulo.data, corpo=form.corpo.data, autor=current_user)
+        # add post no banco de dados
+        database.session.add(post)
+        database.session.commit()
+        flash('Post criado com sucesso', 'alert-success')
+        return redirect(url_for('home'))
+    # agora falta fazer o formulario do post no html
+    return render_template('criarpost.html', form=form)
 
 
 #aula 38

@@ -2,8 +2,41 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <main class="container">
-        <h1>site com flask</h1>
-        <p>python</p>
+    <main class="container mt-3">
+        <h1 class="orange text-center">Comunidade</h1>
+        <h3 class="border-bottom pb-3 text-center">Aqui você interage com o futuro</h3>
+        <!-- para cada post in lista de posts; meupost é uma classe editada no main.css -->
+        {% for post in posts %}
+        <section class="row mt-4 mb-3 p-3 meupost">
+            <article class="col-3">
+                <!-- aula 45 sera a edição do caminho da foto do autor  -->
+                <article class="text-center pb-3">
+                    <strong>{{ post.autor.username }}</strong>
+                </article>
+                <figure class="image text-center">
+                    <img src="{{ url_for('static', filename='fotos_perfil/{}'.format(post.autor.foto_perfil)) }}" class="rounded" width="200">
+                </figure>
+                <article class="row">
+                    <strong class="border-bottom text-center">Cursos</strong>
+                    <!-- para cada curso dentro da lista de curso  -->
+                    {% for curso in post.autor.cursos.split(';') %}
+                        <button type="button" class="btn btn-success mt-3" disable>{{ curso }}</button>
+                    {% endfor %}
+                </article>
+            </article>
+            <article class="col-9 text-center">
+                <h2>{{ post.titulo }}</h2>
+                <p>{{ post.corpo }}</p>
+            </article>
+        </section>
+
+        {% endfor %}
     </main>
 {% endblock %}
+
+
+<!-- aula 44 editar a homepage para os post aparecerem:
+                editar o route da home;
+
+
+-->
